@@ -1,0 +1,48 @@
+<main>
+  <%if (flashMessage.error) {%>
+  <h4 class="py-4 text-center bg-danger text-white">
+    <%=flashMessage.error%>
+  </h4>
+  <%}%>
+  <%if (flashMessage.success) {%>
+  <h4 class="py-4 text-center bg-success text-white">
+    <%=flashMessage.success%>
+  </h4>
+  <%}%>
+  <section class="py-4 container">
+    <div class="py-4">
+      <h2 class="py-4 text-capitalize">
+        account overview
+      </h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">name</th>
+            <th scope="col">email</th>
+            <th scope="col">created at</th>
+            <th scope="col">modified at</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><%=userInfo.fullName %></td>
+            <td><%=userInfo.email%></td>
+            <td><%=userInfo.toLocaleDateString(userInfo.createdAt)%></td>
+            <td><%=userInfo.toLocaleDateString(userInfo.updatedAt)%></td>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <a href="/user/<%= userInfo._id %>/tasks" class="btn btn-outline-dark">
+          back to tasks
+        </a>
+        <a href="/user/<%= userInfo._id %>/account/edit" class="btn btn-outline-dark">
+          edit account
+        </a>
+        <a href="/user/<%= userInfo._id %>/account/delete?_method=DELETE" class="btn btn-outline-dark" onclick="return confirm('are you sure you want to delete your account?')">
+          delete account
+        </a>
+      </div>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,52 @@
+<main>
+  <%if (flashMessage.error) {%>
+  <h4 class="py-4 text-center bg-danger text-white">
+    <%=flashMessage.error%>
+  </h4>
+  <%}%>
+  <%if (flashMessage.success) {%>
+  <h4 class="py-4 text-center bg-success text-white">
+    <%=flashMessage.success%>
+  </h4>
+  <%}%>
+  <section class="py-4 container">
+    <div class="py-4 d-flex justify-content-center">
+      <div>
+        <h4 class="py-2 text-center text-capitalize text-white bg-dark rounded-top">
+          register
+        </h4>
+        <form class="p-4 shadow rounded-bottom" action="/user/register" method="POST">
+          <div class="mb-3">
+            <label for="first" class="form-label">
+              first name
+            </label>
+            <input type="text" class="form-control" name="first" id="first" required="true" />
+          </div>
+          <div class="mb-3">
+            <label for="last" class="form-label">
+              last name
+            </label>
+            <input type="text" class="form-control" name="last" id="lastName" required="true" />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">
+              email address
+            </label>
+            <input type="email" class="form-control" name="email" id="email" required="true" />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">
+              password
+            </label>
+            <input type="password" class="form-control" name="password" id="password" required="true" />
+          </div>
+          <div class="mt-5 text-center text-capitalize">
+            <button type="submit" class="btn btn-dark text-capitalize">
+              submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,51 @@
+<main>
+  <section class="py-4 container">
+    <div class="py-4 d-flex justify-content-center">
+      <div>
+        <h4 class="py-2 text-capitalize text-center text-white bg-dark rounded-top">
+          new task
+        </h4>
+        <form class="p-4 shadow rounded-bottom" action="/user/<%= user.id %>/tasks/new" method="POST">
+          <div class="mb-3">
+            <label for="description" class="form-label text-capitalize">
+              description
+            </label>
+            <input type="text" class="form-control" name="description" id="description">
+          </div>
+          <div class="d-flex mb-3">
+            <div class="mb-3 me-3">
+              <label for="priority" class="form-label text-capitalize">
+                priority
+              </label>
+              <select class="form-select" name="priority" id="priority">
+                <option value="low">low</option>
+                <option value="medium">medium</option>
+                <option value="high">high</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="due" class="form-label text-capitalize">
+                due
+              </label>
+              <input type="date" class="form-control" name="due" id="due">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="project" class="form-label text-capitalize">
+              project
+            </label>
+            <input type="text" class="form-control" name="project" id="project">
+          </div>
+          <div class="mt-5 text-center text-capitalize">
+            <button type="submit" class="text-capitalize btn btn-dark">
+              create
+            </button>
+            <a href="/user/<%= user.id %>/tasks" class="btn btn-dark">
+              cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
