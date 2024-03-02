@@ -1,5 +1,6 @@
 import httpStatusCodes from 'http-status-codes';
 import UnauthenticatedError from '../errors/UnauthenticatedError.js';
+import BadRequestError from '../errors/BadRequestError.js';
 import NotFoundError from '../errors/NotFoundError.js';
 
 const logger = (error, req, res, next) => {
@@ -18,6 +19,14 @@ const responder = (error, req, res, next) => {
     if (error instanceof UnauthenticatedError) {
         return res.status(httpStatusCodes.UNAUTHORIZED).render('error/UnauthenticatedError', {
             title: '401 Error',
+            message: error.message
+        });
+    }
+
+    if (error instanceof BadRequestError) {
+        return res.status(error.status).render('error/index', {
+            title: error.name,
+            status: error.status,
             message: error.message
         });
     }
