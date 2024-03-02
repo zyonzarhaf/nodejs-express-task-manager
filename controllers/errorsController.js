@@ -37,9 +37,10 @@ const responder = (error, req, res, next) => {
 };
 
 const failSafeHandler = (error, req, res, next) => {
-    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).render('error/InternalServerError', {
-        title: 'Internal server error',
-        message: 'internal server error.' 
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).render('error/index', {
+        title: 'InternalServerError',
+        status: 500,
+        message: 'Oops! Something went wrong on our end. Try again later.' 
     });
 };
 
