@@ -10,15 +10,17 @@ const logger = (error, req, res, next) => {
 
 const responder = (error, req, res, next) => {
     if (error instanceof NotFoundError) {
-        return res.status(httpStatusCodes.NOT_FOUND).render('error/NotFoundError', {
-            title: '404 Error', 
+        return res.status(error.status).render('error/index', {
+            title: error.name, 
+            status: error.status,
             message: error.message
         });
     }
 
     if (error instanceof UnauthenticatedError) {
-        return res.status(httpStatusCodes.UNAUTHORIZED).render('error/UnauthenticatedError', {
-            title: '401 Error',
+        return res.status(error.status).render('error/index', {
+            title: error.name,
+            status: error.status,
             message: error.message
         });
     }
