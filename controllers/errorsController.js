@@ -36,7 +36,7 @@ const responder = (error, req, res, next) => {
     next(error);
 };
 
-const failSafeHandler = (error, req, res) => {
+const failSafeHandler = (error, req, res, next) => {
     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).render('error/InternalServerError', {
         title: 'Internal server error',
         message: 'internal server error.' 
