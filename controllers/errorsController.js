@@ -4,7 +4,7 @@ import BadRequestError from '../errors/BadRequestError.js';
 import NotFoundError from '../errors/NotFoundError.js';
 
 const logger = (error, req, res, next) => {
-    console.error(`error at ${req.url}:\n`, error);
+    console.error(error);
     next(error);
 };
 
