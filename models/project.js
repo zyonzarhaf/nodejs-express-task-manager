@@ -12,10 +12,7 @@ const projectSchema = mongoose.Schema({
     tasks: [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Task'
-    }],
-    progress: {
-        type: Number
-    }
+    }]
 });
 
 const Project = mongoose.model('Project', projectSchema);
