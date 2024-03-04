@@ -6,6 +6,7 @@ const projectSchema = mongoose.Schema({
         trim: true,
         lowercase: true,
         unique: true,
+        required: true,
         min: 3,
         max: 72
     },
