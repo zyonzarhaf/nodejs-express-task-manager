@@ -56,6 +56,10 @@ taskSchema.methods.toISOStringCustom = toISOStringCustom();
 taskSchema.methods.toLocaleDateStringCustom = toLocaleDateStringCustom();
 taskSchema.methods.getElapsedTime = getElapsedTime()
 
+taskSchema.pre('validate', function() {
+    this.age = new Date();
+});
+
 const Task = mongoose.model('Task', taskSchema);
 
 export default Task;
