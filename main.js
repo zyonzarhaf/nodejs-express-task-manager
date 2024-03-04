@@ -3,7 +3,8 @@ import express from 'express';
 import setMiddleware from './middleware/setMiddleware.js';
 import router from './routes/index.js';
 import connectDB from './db/connectDB.js';
-import notFound from './middleware/custom/notFound.js';
+
+import notFoundResponse from './middleware/custom/notFoundResponse.js';
 
 import { 
   logger,
@@ -21,7 +22,7 @@ setMiddleware(app);
 
 app.use(router);
 
-app.use(notFound);
+app.use(notFoundResponse);
 app.use(logger);
 app.use(responder);
 app.use(failSafeHandler);
