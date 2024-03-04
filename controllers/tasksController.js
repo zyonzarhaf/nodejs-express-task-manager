@@ -1,102 +1,100 @@
+import mongoose from 'mongoose';
 import asyncWrapper from '../middleware/custom/async.js';
-import Task from '../models/task.js';
 import NotFoundError from '../errors/NotFoundError.js';
+import BadRequestError from '../errors/BadRequestError.js';
+import Task from '../models/task.js';
 
 const createTask = asyncWrapper(async (req, res, next) => {
-    const userId = req.params.userId;
-    const task = await Task.create(
-        {
-            ...req.body,
-            user: userId 
-        }
-    );
+    if (req.skip) return next();
 
+    const { userId } = req.params;
+    const formData = req.body;
 
-    req.flash('success', 'Task successfully created');
+    await Task.create({ ...formData, user: userId });
+    req.flash('success', 'Task successfully created.');
     res.locals.redirect = `/user/${userId}/tasks`;
     next();
 });
 
 const updateTask = asyncWrapper(async (req, res, next) => {
+    if (req.skip) return next();
+
     const { userId, taskId } = req.params;
-    const task = req.body;
 
-
-    try {
-        await Task.findByIdAndUpdate(taskId, task);
-    } catch (error) {
-        throw new NotFoundError('Task not found.');
+    if (!mongoose.isValidObjectId(taskId)) {
+        throw new BadRequestError(`Invalid task id: ${taskId}.`);
     }
 
-    req.flash('success', 'Task successfully updated');
+    const formData = req.body;
+
+    const updatedTask = await Task.findOneAndUpdate({ _id: taskId }, formData).exec();
+
+    if (!updatedTask) {
+        throw new NotFoundError(`No task with id ${taskId} was found.`);
+    }
+
     res.locals.redirect = `/user/${userId}/tasks`;
+    req.flash('success', 'Task successfully updated.');
     next();
 });
 
 const deleteTask = asyncWrapper(async (req, res, next) => {
     const { userId, taskId } = req.params;
 
-    try {
-        await Task.findByIdAndDelete(taskId);
-    } catch (error) {
-        throw new NotFoundError('Task not found.');
+    if (!mongoose.isValidObjectId(taskId)) {
+        throw new BadRequestError(`Invalid task id: ${taskId}.`);
     }
 
-    req.flash('success', 'Task successfully deleted');
+    const deletedTask = await Task.findOneAndDelete({ _id: taskId }).exec();
+
     res.locals.redirect = `/user/${userId}/tasks`;
+
+    if (!deletedTask) {
+        const message = 
+            `Could not delete the task: no task with id ${taskId} was found.`;
+
+        console.log(message);
+        req.flash('error', message);
+        return next();
+    }
+
+    req.flash('success', 'Task successfully deleted.');
     next();
 });
 
 const deleteAllTasks = asyncWrapper(async (req, res, next) => {
-    const userId = req.params.userId;
-    const deleted = await Task.deleteMany({ user: userId });
+    const { userId } = req.params;
+    const deletedTasks = await Task.deleteMany({ user: userId }).exec();
 
-    if (!deleted.deletedCount > 0) {
-        req.flash('error', 'No task to delete');
-        res.locals.redirect = `/user/${userId}/tasks`;
+    res.locals.redirect = `/user/${userId}/tasks`;
+
+    if (deletedTasks.n < 1) {
+        const message = `You haven't created any task to delete yet.`
+
+        console.log(message);
+        req.flash('error', message);
         return next();
     }
 
-    req.flash('success', 'Successfully deleted all tasks');
-    res.locals.redirect = `/user/${userId}/tasks`;
+    req.flash('success', 'All tasks have been successfully deleted.');
     next();
 });
 
-const renderTasks = asyncWrapper(async (req, res, next) => {
-    const userId = req.params.userId;
-    const tasks = await Task.find({ user: userId });
+const renderTasks = asyncWrapper(async (req, res) => {
+    const { userId } = req.params;
+    const tasks = await Task.find({ user: userId }).exec();
 
     res.render('task/tasks', {
-        title: 'Tasks Overview',
+        title: 'Tasks overview',
         tasks,
     });
 });
-
-const renderTask = asyncWrapper(async (req, res) => {
-    const taskId = req.params.taskId;
-    const task = await Task.findById(taskId);
-
-    if (!task) {
-        throw new NotFoundError('Task not found.');
-    }
-
-    res.render('task/show', {
-        title: 'Task overview',
-        task
-    });
-});
-
-
-    });
-});
-
 
 export {
     createTask,
     updateTask,
     deleteTask,
     deleteAllTasks,
-    renderTasks,
-    renderTask,
+    renderTasks
 };
 
