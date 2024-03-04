@@ -13,42 +13,32 @@ const usePassport = app => {
             model
         } = options;
 
-        return new LocalStrategy({
-                usernameField,
-                passwordField
-            },
+        return new LocalStrategy(
+            { usernameField, passwordField },
             async (username, password, done) => {
                 try {
-                    const user = await model
-                        .findOne({
-                            email: username
-                        });
+                    const user = await model.findOne({ email: username }).exec();
 
-                    if (!user) return done(null, false, {
-                        message: 'user does not exist'
-                    });
+                    if (!user) { 
+                        return done(null, false, { message: 'User does not exist' });
+                    }
 
-                    const isMatch = await user
-                        .comparePasswords(password);
+                    const isMatch = await user.comparePasswords(password);
 
-                    if (!isMatch) return done(null, false, {
-                        message: 'incorrect password'
-                    });
+                    if (!isMatch) {
+                        return done(null, false, { message: 'Incorrect password' });
+                    } 
 
-                    return done(null, user, {
-                        message: 'you have successfully logged in'
-                    });
-                } catch (err) {
-                    return done(err);
+                    return done(null, user, { message: 'you have successfully logged in' });
+                } catch (error) {
+                    return done(error);
                 }
             }
         )
     };
 
-    const user = createNewLocalStrategy({
-        usernameField: 'email',
-        passwordField: 'password',
-        model: User
+    const user = createNewLocalStrategy({ 
+        usernameField: 'email', passwordField: 'password', model: User
     });
 
     passport.use('local-user', user);
