@@ -1,7 +1,5 @@
 import asyncWrapper from '../middleware/custom/async.js';
-import User from '../models/user.js';
 import Task from '../models/task.js';
-import Project from '../models/project.js';
 import NotFoundError from '../errors/NotFoundError.js';
 
 const createTask = asyncWrapper(async (req, res, next) => {
@@ -9,26 +7,10 @@ const createTask = asyncWrapper(async (req, res, next) => {
     const task = await Task.create(
         {
             ...req.body,
-            age: new Date(),
             user: userId 
         }
     );
-    const operations = [];
 
-    if (task.project) {
-        operations.push(Project.findOneAndUpdate(
-            { name: task.project },
-            { $push: { tasks: task } },
-            { upsert: true }
-        ));
-    }
-
-    operations.push(User.findByIdAndUpdate(
-        userId,
-        { $push: { tasks: task } }
-    ));
-
-    await Promise.all(operations);
 
     req.flash('success', 'Task successfully created');
     res.locals.redirect = `/user/${userId}/tasks`;
