@@ -7,10 +7,7 @@ import {
     updateTask,
     deleteTask,
     deleteAllTasks,
-    renderTasks,
-    renderTask,
-    renderNewForm,
-    renderEditForm
+    renderTasks
 } from '../controllers/tasksController.js';
 
 const router = express.Router();
@@ -22,17 +19,14 @@ router
 
 router 
     .route('/user/:userId/tasks/new')
-    .get(checkUserAuth, renderNewForm)
     .post(checkUserAuth, createTask, redirectView)
 
 router
     .route('/user/:userId/tasks/:taskId')
-    .get(checkUserAuth, renderTask)
     .delete(checkUserAuth, deleteTask, redirectView);
 
 router 
     .route('/user/:userId/tasks/:taskId/edit')
-    .get(checkUserAuth, renderEditForm)
     .put(checkUserAuth, updateTask, redirectView)
     .delete(checkUserAuth, deleteTask, redirectView);
 

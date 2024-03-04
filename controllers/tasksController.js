@@ -86,23 +86,7 @@ const renderTask = asyncWrapper(async (req, res) => {
     });
 });
 
-const renderNewForm = (req, res) => {
-    res.render('task/new', {
-        title: 'Create new task',
-    });
-}
 
-const renderEditForm = asyncWrapper(async (req, res) => {
-    const taskId = req.params.taskId;
-    const task = await Task.findById(taskId);
-
-    if (!task) {
-        throw new NotFoundError('Task not found.');
-    }
-
-    res.render('task/edit', {
-        title: 'Edit task',
-        task
     });
 });
 
@@ -114,7 +98,5 @@ export {
     deleteAllTasks,
     renderTasks,
     renderTask,
-    renderNewForm,
-    renderEditForm
 };
 
