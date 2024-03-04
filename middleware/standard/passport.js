@@ -45,11 +45,7 @@ const usePassport = app => {
 
     passport.serializeUser((user, done) => {
         process.nextTick(() => {
-            done(null, {
-                id: user._id,
-                email: user.email,
-                name: user.name
-            });
+            done(null, { id: user._id, email: user.email, apiToken: user.apiToken });
         });
     });
 
