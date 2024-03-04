@@ -1,10 +1,10 @@
 import httpStatusCodes from 'http-status-codes';
 
 class UnauthenticatedError extends Error {
-    constructor(message) {
+    constructor (message) {
         super(message);
         this.name = 'UnauthenticatedError';
-        this.httpStatusCode = httpStatusCodes.UNAUTHORIZED;
+        this.status = httpStatusCodes.UNAUTHORIZED;
     }
 }
 
