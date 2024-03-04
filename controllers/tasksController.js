@@ -20,22 +20,7 @@ const createTask = asyncWrapper(async (req, res, next) => {
 const updateTask = asyncWrapper(async (req, res, next) => {
     const { userId, taskId } = req.params;
     const task = req.body;
-    const statusActions = {
-        'started': () => {
-            task.started = new Date();
-        },
-        'finished': () => {
-            task.finished = new Date();
-        },
-        'none': () => { 
-            task.started = null;
-            task.finished = null;
-        }
-    };
 
-    if (statusActions[task.status]) {
-        statusActions[task.status]();
-    }
 
     try {
         await Task.findByIdAndUpdate(taskId, task);
@@ -79,42 +64,11 @@ const deleteAllTasks = asyncWrapper(async (req, res, next) => {
 
 const renderTasks = asyncWrapper(async (req, res, next) => {
     const userId = req.params.userId;
-    const query = req.query;
     const tasks = await Task.find({ user: userId });
-    const filters = {
-        priority: Task.schema.path('priority').enumValues,
-        status: Task.schema.path('status').enumValues,
-        project: [
-            ...new Set(
-                tasks
-                    .map(task => task.project)
-                    .filter(project => project && project)
-            )
-        ],
-    }
-
-    if (Object.keys(query).length > 0) {
-        const tasks = await Task.find({ user: userId, ...query });
-
-        if (tasks.length < 1) {
-            req.flash('error', 'No task matches filter conditions');
-            res.locals.redirect = `/user/${userId}/tasks`;
-            return next();
-        }
-
-        return res.render('task/tasks', {
-            title: 'Tasks Overview',
-            tasks,
-            filters,
-            query
-        });
-    }
 
     res.render('task/tasks', {
         title: 'Tasks Overview',
         tasks,
-        filters,
-        query
     });
 });
 
