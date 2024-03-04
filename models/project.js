@@ -15,6 +15,24 @@ const projectSchema = mongoose.Schema({
     }]
 });
 
+projectSchema.post('findOneAndUpdate', async function () {
+    const update = this.getUpdate();
+
+    if (!update['$pull']) return;
+
+    await this.model.findOneAndDelete({ ...this.getQuery(), tasks: [] }).exec();
+});
+
+projectSchema.post('updateMany', async function () {
+    const update = this.getUpdate();
+
+    if (!update['$pull'].tasks) return;
+
+    console.log(update['$pull'].tasks);
+
+    await this.model.deleteMany({ ...this.getQuery(), tasks: [] }).exec();
+});
+
 const Project = mongoose.model('Project', projectSchema);
 
 export default Project;
