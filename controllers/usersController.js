@@ -1,29 +1,11 @@
 import asyncWrapper from '../middleware/custom/async.js';
 import passport from 'passport';
 import User from '../models/user.js';
-import UnauthenticatedError from '../errors/UnauthenticatedError.js';
 
 const createUser = asyncWrapper(async (req, res, next) => {
     if (req.skip) return next();
 
-    const {
-        first,
-        last,
-        email,
-        password
-    } = req.body;
-
-    const newUser = {
-        name: {
-            first,
-            last
-        },
-        email,
-        password
-    }
-
-    await User.create(newUser);
-
+    await User.create(req.body);
     req.flash('success', 'congratulations, you can now log into your new account');
     res.locals.redirect = '/user/login';
     next();
@@ -32,86 +14,37 @@ const createUser = asyncWrapper(async (req, res, next) => {
 const updateUser = asyncWrapper(async (req, res, next) => {
     if (req.skip) return next();
 
-    if (!req.isAuthenticated()) {
-        throw new UnauthenticatedError('User is not authenticated.');
-    }
+    const { userId } = req.params;
+    const formData = req.body;
 
-    if (!req.params.userId === req.user.id) {
-        throw new UnauthenticatedError('User not found.');
-    }
-
-    const userId = req.params.userId;
-
-    const {
-        first,
-        last,
-        email,
-        password
-    } = req.body;
-
-    const newUser = {
-        name: {
-            first,
-            last
-        },
-        email,
-        password
-    }
-
-    await User.findByIdAndUpdate(userId, newUser);
-
-    req.flash('success', 'congratulations, your account has been successfully updated');
+    await User.findOneAndUpdate({ _id: userId }, formData).exec();
     res.locals.redirect = `/user/${userId}/account`;
+    req.flash('success', 'congratulations, your account has been successfully updated');
     next();
 });
 
 const deleteUser = asyncWrapper(async (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        throw new UnauthenticatedError('User is not authenticated.');
-    }
+    const { userId } = req.params;
 
-    if (!req.params.userId === req.user.id) {
-        throw new UnauthenticatedError('User not found.');
-    }
-
-    const userId = req.params.userId;
-
-    await User.findByIdAndDelete(userId);
-
-    req.flash('success', 'congratulations, your account has been successfully deleted');
+    await User.findOneAndUpdate({ _id: userId }).exec();
     res.locals.redirect = '/';
+    req.flash('success', 'congratulations, your account has been successfully deleted');
     next();
 });
 
 const renderUserAccount = asyncWrapper(async (req, res) => {
-    if (!req.isAuthenticated()) {
-        throw new UnauthenticatedError('User is not authenticated.');
-    }
-
-    if (!req.params.userId === req.user.id) {
-        throw new UnauthenticatedError('User not found.');
-    }
-
-    const userId = req.params.userId;
-    const userInfo = await User.findById(userId);
+    const { userId } = req.params; 
+    const user = await User.findOne({ _id: userId }).exec();
 
     res.render('user/account', {
         title: 'user',
-        userInfo
+        user
     });
 });
 
 const renderEditForm = asyncWrapper(async (req, res) => {
-    if (!req.isAuthenticated()) {
-        throw new UnauthenticatedError('User is not authenticated.');
-    }
-
-    if (!req.params.userId === req.user.id) {
-        throw new UnauthenticatedError('User not found.');
-    }
-
-    const userId = req.params.userId;
-    const user = await User.findById(userId);
+    const { userId } = req.params;
+    const user = await User.findOne({ _id: userId }).exec();
 
     res.render('user/edit', {
         title: 'Edit user account',
@@ -156,6 +89,7 @@ const authenticate = (req, res, next) => {
 const logout = (req, res, next) => {
     req.logout((error) => {
         if (error) return next(error);
+
         req.flash('success', 'successfully logged out');
         res.locals.redirect = '/';
         next();
