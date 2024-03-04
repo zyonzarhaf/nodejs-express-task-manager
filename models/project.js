@@ -5,7 +5,6 @@ const projectSchema = mongoose.Schema({
         type: String,
         trim: true,
         lowercase: true,
-        unique: true,
         required: true,
         min: 3,
         max: 72
