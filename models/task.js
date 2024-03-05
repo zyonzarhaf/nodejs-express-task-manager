@@ -83,6 +83,48 @@ taskSchema.pre('findOneAndUpdate', function () {
     if (!update.due) update['$unset'] = { due: 1 };
 });
 
+taskSchema.pre('findOneAndDelete', async function () {
+    const document = await this.model.findOne(this.getFilter()).exec();
+
+    await Promise.all(
+        [
+            User.findOneAndUpdate(
+                { _id: document.user },
+                { $pull: { tasks: document._id } }
+            ).exec(),
+
+            Project.findOneAndUpdate(
+                { name: document.project },
+                { $pull: { tasks: document._id } }
+            ).exec()
+        ]
+    );
+});
+
+taskSchema.pre('deleteMany', async function () {
+    const documents = await this.model.find(this.getQuery())
+                                      .select('id project user')
+                                      .exec();
+
+    const { ids, projects, user } = {
+        user: documents[0]?.user,
+        ids: documents.map(doc => doc.id),
+        projects: [...new Set(documents.map(doc => doc.project))]
+    };
+
+    await Promise.all([
+        User.findOneAndUpdate(
+            { _id: user },
+            { tasks: [] }
+        ).exec(),
+
+        Project.updateMany(
+            { name: { $in: projects } },
+            { $pull: { tasks: { $in: ids } } }
+        ).exec()
+    ]);
+});
+
 const Task = mongoose.model('Task', taskSchema);
 
 export default Task;
