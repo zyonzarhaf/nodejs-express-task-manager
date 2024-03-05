@@ -77,6 +77,12 @@ taskSchema.post('save', async function () {
     );
 });
 
+taskSchema.pre('findOneAndUpdate', function () {
+    const update = this.getUpdate();
+    
+    if (!update.due) update['$unset'] = { due: 1 };
+});
+
 const Task = mongoose.model('Task', taskSchema);
 
 export default Task;
