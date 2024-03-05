@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import { toISOStringCustom, toLocaleDateStringCustom } from '../helpers/helpers.js';
 
 const userSchema = mongoose.Schema(
     {
@@ -40,6 +41,8 @@ const userSchema = mongoose.Schema(
     }
 );
 
+userSchema.methods.toISOStringCustom = toISOStringCustom();
+userSchema.methods.toLocaleDateStringCustom = toLocaleDateStringCustom();
 
 userSchema.pre('save', async function(next) {
     const user = this;
@@ -61,16 +64,9 @@ userSchema.methods.comparePasswords = function(inputpassword) {
     return bcrypt.compare(inputpassword, this.password);
 }
 
-userSchema.methods.toISOString = function(date) {
-    if (!date) return;
 
-    return new Date(date.getTime()).toISOString().split("T")[0];
-}
 
-userSchema.methods.toLocaleDateString = function(date) {
-    if (!date) return;
 
-    return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000).toLocaleDateString();
 }
 
 userSchema.virtual('fullName').get(function () {
