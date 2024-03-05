@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import randToken from 'rand-token';
 import { toISOStringCustom, toLocaleDateStringCustom } from '../helpers/helpers.js';
+import Task from './task.js';
 
 const userSchema = mongoose.Schema(
     {
@@ -74,6 +75,10 @@ userSchema.pre('findOneAndUpdate', async function () {
     }
 });
 
+userSchema.pre('findOneAndDelete', async function () {
+    const document = await this.model.findOne(this.getFilter()).exec();
+    await Task.deleteMany({ user: document._id }); 
+});
 
 userSchema.methods.comparePasswords = async function (password) {
     const result = await bcrypt.compare(password, this.password);
