@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import randToken from 'rand-token';
 import { toISOStringCustom, toLocaleDateStringCustom } from '../helpers/helpers.js';
 
 const userSchema = mongoose.Schema(
@@ -35,6 +36,10 @@ const userSchema = mongoose.Schema(
             ref: 'Task'
             }
         ],
+        apiToken: {
+            type: String,
+            required: true
+        }
     },
     {
         timestamps: true,
@@ -44,29 +49,35 @@ const userSchema = mongoose.Schema(
 userSchema.methods.toISOStringCustom = toISOStringCustom();
 userSchema.methods.toLocaleDateStringCustom = toLocaleDateStringCustom();
 
-userSchema.pre('save', async function(next) {
-    const user = this;
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    user.password = hashedPassword;
-    next();
+userSchema.pre('validate', function () {
+    this.apiToken = randToken.generate(16);
 });
 
-userSchema.pre('findOneAndUpdate', async function(next) {
+userSchema.pre('save', async function () {
+    this.password = await bcrypt.hash(this.password, 10)
+});
+
+userSchema.pre('findOneAndUpdate', async function () {
+    const document = await this.model.findOne(this.getQuery()).exec();
+
+    if (!document) return;
+
     const update = this.getUpdate();
+
     if (update.password) {
-        const hashedPassword = await bcrypt.hash(update.password, 10);
-        update.password = hashedPassword;
+        const { password: oldPassword } = document;
+        const { password: newPassword } = update;
+
+        if (newPassword !== oldPassword) {
+            update.password = await bcrypt.hash(newPassword, 10);
+        }
     }
-    next();
 });
 
-userSchema.methods.comparePasswords = function(inputpassword) {
-    return bcrypt.compare(inputpassword, this.password);
-}
 
-
-
-
+userSchema.methods.comparePasswords = async function (password) {
+    const result = await bcrypt.compare(password, this.password);
+    return result;
 }
 
 userSchema.virtual('fullName').get(function () {
