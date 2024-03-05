@@ -1,41 +1,45 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
-const userSchema = mongoose.Schema({
-    name: {
-        first: {
+const userSchema = mongoose.Schema(
+    {
+        first_name: {
+            type: String,
+            trim: true,
+            lowercase: true,
+            required: true
+        },
+        last_name: {
+            type: String,
+            trim: true,
+            lowercase: true,
+            required: true
+        },
+        email: {
+            type: String,
+            trim: true,
+            lowercase: true,
+            unique: true,
+            required: true,
+        },
+        password: {
             type: String,
             required: true,
-            lowercase: true,
-            trim: true,
+            unique: true,
+            trim: true
         },
-        last: {
-            type: String,
-            required: true,
-            lowercase: true,
-            trim: true,
-        },
+        tasks: [
+            {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Task'
+            }
+        ],
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true,
-    },
-    password: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
-    },
-    tasks: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Task'
-    }]
-}, {
+    {
         timestamps: true,
-    });
+    }
+);
+
 
 userSchema.pre('save', async function(next) {
     const user = this;
@@ -70,7 +74,7 @@ userSchema.methods.toLocaleDateString = function(date) {
 }
 
 userSchema.virtual('fullName').get(function () {
-    return `${this.name.first} ${this.name.last}`
+    return `${this.first_name} ${this.last_name}`
 });
 
 const User = mongoose.model('User', userSchema);
