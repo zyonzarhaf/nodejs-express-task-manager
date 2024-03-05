@@ -60,6 +60,23 @@ taskSchema.pre('validate', function() {
     this.age = new Date();
 });
 
+taskSchema.post('save', async function () {
+    await Promise.all(
+        [
+            await User.findOneAndUpdate(
+                { _id: this.user },
+                { $addToSet: { tasks: this._id } }
+            ).exec(),
+
+            await Project.findOneAndUpdate(
+                { name: this.project },
+                { $addToSet: { tasks: this._id }},
+                { upsert: true, new: true }
+            ).exec()
+        ]
+    );
+});
+
 const Task = mongoose.model('Task', taskSchema);
 
 export default Task;
