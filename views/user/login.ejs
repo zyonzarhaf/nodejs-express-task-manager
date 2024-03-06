@@ -1,14 +1,14 @@
 <main>
-  <%if (flashMessage.error) {%>
-  <h4 class="py-4 text-center bg-danger text-white">
-    <%=flashMessage.error%>
-  </h4>
-  <%}%>
-  <%if (flashMessage.success) {%>
-  <h4 class="py-4 text-center bg-success text-white">
-    <%=flashMessage.success%>
-  </h4>
-  <%}%>
+  <% if (flashMessage.error) { %>
+    <h4 class="py-4 text-center bg-danger text-white">
+      <%= flashMessage.error %>
+    </h4>
+  <% } %>
+  <% if (flashMessage.success) { %>
+    <h4 class="py-4 text-center bg-success text-white">
+      <%= flashMessage.success %>
+    </h4>
+  <% } %>
   <section class="py-4 container">
     <div class="py-4 d-flex justify-content-center">
       <div>
@@ -20,13 +20,21 @@
             <label for="email" class="form-label">
               email address
             </label>
-            <input type="email" class="form-control" name="email" id="email" />
+            <input type="email"
+                   class="form-control"
+                   name="email"
+                   id="email"
+            />
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">
               password
             </label>
-            <input type="password" class="form-control" name="password" id="password" />
+            <input type="password"
+                   class="form-control"
+                   name="password"
+                   id="password"
+            />
           </div>
           <div class="mt-5 text-center text-capitalize">
             <button type="submit" class="btn btn-dark text-capitalize">
