@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import setMiddleware from './middleware/setMiddleware.js';
 import router from './routes/index.js';
+import apiRouter from './api/routes/index.js';
 import connectDB from './db/connectDB.js';
 
 import notFoundResponse from './middleware/custom/notFoundResponse.js';
@@ -21,6 +22,7 @@ app.set('view engine', 'ejs');
 setMiddleware(app);
 
 app.use(router);
+app.use(apiRouter);
 
 app.use(notFoundResponse);
 app.use(logger);
