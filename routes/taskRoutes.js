@@ -1,6 +1,7 @@
 import express from 'express';
-import checkUserAuth from '../middleware/custom/checkUserAuth.js';
+import { validateTask, validateUpdatedTask } from '../middleware/custom/validators.js';
 import redirectView from '../middleware/custom/redirectView.js';
+import checkUserAuth from '../middleware/custom/checkUserAuth.js';
 
 import {
     createTask,
@@ -10,24 +11,17 @@ import {
     renderTasks
 } from '../controllers/tasksController.js';
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router
-    .route('/user/:userId/tasks')
-    .get(checkUserAuth, renderTasks, redirectView)
-    .delete(checkUserAuth, deleteAllTasks, redirectView);
+router.use(checkUserAuth);
 
-router 
-    .route('/user/:userId/tasks/new')
-    .post(checkUserAuth, createTask, redirectView)
+router.route('/:taskId')
+      .put(validateUpdatedTask, updateTask, redirectView)
+      .delete(deleteTask, redirectView);
 
-router
-    .route('/user/:userId/tasks/:taskId')
-    .delete(checkUserAuth, deleteTask, redirectView);
-
-router 
-    .route('/user/:userId/tasks/:taskId/edit')
-    .put(checkUserAuth, updateTask, redirectView)
-    .delete(checkUserAuth, deleteTask, redirectView);
+router.route('/')
+      .get(renderTasks, redirectView)
+      .post(validateTask, createTask, redirectView)
+      .delete(deleteAllTasks, redirectView);
 
 export default router;

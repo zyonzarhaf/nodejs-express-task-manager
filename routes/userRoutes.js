@@ -1,7 +1,7 @@
 import express from 'express';
-import validate from '../middleware/custom/validate.js';
-import checkUserAuth from '../middleware/custom/checkUserAuth.js';
+import { validateUser, validateUpdatedUser } from '../middleware/custom/validators.js';
 import redirectView from '../middleware/custom/redirectView.js';
+import checkUserAuth from '../middleware/custom/checkUserAuth.js';
 
 import {
     createUser,
@@ -17,29 +17,26 @@ import {
 
 const router = express.Router();
 
-router
-    .route('/user/login')
-    .get(renderLoginForm)
-    .post(authenticate);
+router.route('/:userId/account/edit')
+      .all(checkUserAuth)
+      .get(renderEditForm)
+      .put(validateUpdatedUser, updateUser, redirectView)
+      .delete(deleteUser, redirectView);
 
-router  
-    .route('/user/logout')
-    .get(logout, redirectView);
+router.route('/:userId/account')
+      .all(checkUserAuth)
+      .get(renderUserAccount)
+      .delete(deleteUser, redirectView);
 
-router
-    .route('/user/register')
-    .get(renderRegistrationForm)
-    .post(validate, createUser, redirectView);
+router.route('/login')
+      .get(renderLoginForm)
+      .post(authenticate);
 
-router
-    .route('/user/:userId/account')
-    .get(checkUserAuth, renderUserAccount);
+router.route('/logout')
+      .get(logout, redirectView);
 
-router
-    .route('/user/:userId/account/edit')
-    .get(checkUserAuth, renderEditForm)
-    .put(checkUserAuth, validate, updateUser, redirectView)
-    .delete(checkUserAuth, deleteUser, redirectView);
-
+router.route('/register')
+      .get(renderRegistrationForm)
+      .post(validateUser, createUser, redirectView);
 
 export default router;
