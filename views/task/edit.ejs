@@ -18,9 +18,9 @@
                 priority
               </label>
               <select class="form-select" name="priority" id="priority"> 
-                <option value="low" <%= task.priority === "low" ? 'selected' : '' %>>low</option>
-                <option value="medium" <%= task.priority === "medium" ? 'selected' : '' %>>medium</option>
-                <option value="high" <%= task.priority === "high" ? 'selected' : '' %>>high</option>
+                <option value="low" <%= task.priority === "low" && 'selected' %>>low</option>
+                <option value="medium" <%= task.priority === "medium" && 'selected' %>>medium</option>
+                <option value="high" <%= task.priority === "high" && 'selected' %>>high</option>
               </select>
             </div>
             <div class="mb-3">
