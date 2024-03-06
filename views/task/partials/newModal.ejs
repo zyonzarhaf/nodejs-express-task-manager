@@ -1,0 +1,81 @@
+<!-- Modal -->
+<div class="modal fade modal-bg-dark"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 text-capitalize" id="exampleModalLabel">
+          create new task
+        </h1>
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="m-0" action="/user/<%= user.id %>/tasks" method="POST">
+          <div class="mb-3">
+            <label for="description" class="form-label text-capitalize">
+              description
+            </label>
+            <input type="text"
+              class="form-control"
+              name="description"
+              id="description"
+            >
+          </div>
+          <div class="d-flex mb-3">
+            <div class="mb-3 me-3">
+              <label for="priority" class="form-label text-capitalize">
+                priority
+              </label>
+              <select class="form-select" name="priority" id="priority">
+                <option value="low">low</option>
+                <option value="medium">medium</option>
+                <option value="high">high</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="due" class="form-label text-capitalize">
+                due
+              </label>
+              <input type="date"
+                class="form-control"
+                name="due"
+                id="due"
+              >
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="project" class="form-label text-capitalize">
+              project
+            </label>
+            <input type="text"
+              class="form-control"
+              name="project"
+              id="project"
+            >
+          </div>
+          <div class="modal-footer border-0">
+            <button type="submit" class="btn btn-outline-dark">
+              create
+            </button>
+            <button type="button"
+              class="btn btn-outline-danger"
+              data-bs-dismiss="modal"
+            >
+              close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
