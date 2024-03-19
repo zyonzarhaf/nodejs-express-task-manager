@@ -26,7 +26,7 @@ const updateUser = asyncWrapper(async (req, res, next) => {
 const deleteUser = asyncWrapper(async (req, res, next) => {
     const { userId } = req.params;
 
-    await User.findOneAndUpdate({ _id: userId }).exec();
+    await User.findOneAndDelete({ _id: userId }).exec();
     res.locals.redirect = '/';
     req.flash('success', 'congratulations, your account has been successfully deleted');
     next();
