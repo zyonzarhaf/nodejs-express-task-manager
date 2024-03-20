@@ -3,20 +3,15 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
+- [Run Locally](#prerequisites)
 - [Project Structure](#project-structure)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 This is a simple task manager web application built with nodejs/express as part of my efforts to better understand the express framework.
 
 ## Features
 - User authentication with passport.js
-- CRUD operations for both users and tasks.
-- Filter tasks by priority, status and project (if there is at least one in the db).
+- CRUD operations for users and their tasks.
 
 ## Run Locally
 - Ensure you have Node.js installed in your machine.
@@ -24,10 +19,10 @@ This is a simple task manager web application built with nodejs/express as part 
 - Install all the dependencies found in package.json.
 - [Create an account at mongodb](https://www.mongodb.com/atlas/database).
 - Create a new cluster.
-- Get the connection URI string for the new cluster, by cliking on the "connect" button next to it's name.
-- Create a .env file at the root level of the app, containing both URI= ; and SECRET= ; variables.
-- Paste the connection string as the value for the URI variable and give the SECRET variable a value (str of course) of your choice.
-- Start the development server by running:
+- Get the connection URI string for the new cluster by cliking on the "connect" button next to it's name.
+- Create a .env file at the root level of the app, containing both URI and SECRET vars.
+- Assign the connection string to the URI var and assign a string of your choice to the SECRET var.
+- Start the server by running:
    ```shell
    npm start
    ```
@@ -37,24 +32,45 @@ This is a simple task manager web application built with nodejs/express as part 
 The project structure is organized as follows:
 ```
 project-root/
-├── controllers
+├── .git/
+├── api/
+│   ├── controllers/
+│   │   ├── errorsController.js
+│   │   ├── tasksController.js
+│   │   └── usersController.js
+│   ├── routes/
+│   │   ├── index.js
+│   │   ├── taskApiRoutes.js
+│   │   └── userApiRoutes.js
+│   └── tests/
+│       ├── api.test.js
+│       └── setuptestdb.js
+├── controllers/
 │   ├── errorsController.js
 │   ├── homeController.js
 │   ├── tasksController.js
 │   └── usersController.js
-├── db
+├── db/
 │   └── connectDB.js
-├── errors
+├── errors/
+│   ├── BadRequestError.js
+│   ├── InvalidTokenError.js
 │   ├── NotFoundError.js
 │   └── UnauthenticatedError.js
-├── middleware
-│   ├── custom
+├── helpers/
+│   └── helpers.js
+├── middleware/
+│   ├── custom/
 │   │   ├── async.js
+│   │   ├── checkContentType.js
+│   │   ├── checkUserAuth.js
 │   │   ├── notFound.js
+│   │   ├── notFoundResponse.js
 │   │   ├── redirectView.js
 │   │   ├── resLocals.js
-│   │   └── validate.js
-│   └── standard
+│   │   ├── validate.js
+│   │   └── validators.js
+│   └── standard/
 │       ├── flash.js
 │       ├── json.js
 │       ├── layouts.js
@@ -63,17 +79,44 @@ project-root/
 │       ├── public.js
 │       ├── session.js
 │       └── urlencoded.js
-├── models
+├── models/
 │   ├── project.js
 │   ├── task.js
 │   └── user.js
-├── node_modules
-├── public
-├── routes
-├── views
-├── .env
+├── public/
+│   ├── css/
+│   │   ├── bootstrap.min.css
+│   │   └── styles.css
+│   └── js/
+│       ├── app.js
+│       └── bootstrap.bundle.min.js
+├── routes/
+│   ├── homeRoutes.js
+│   ├── index.js
+│   ├── setRoutes.js
+│   ├── taskRoutes.js
+│   └── userRoutes.js
+└── views/
+    ├── error/
+    │   ├── index.ejs
+    │   ├── InternalServerError.ejs
+    │   ├── NotFoundError.ejs
+    │   └── UnauthenticatedError.ejs
+    ├── home/
+    │   └── index.ejs
+    └── task/
+        ├── partials/
+        │   ├── editModal.ejs
+        │   └── newModal.ejs
+        ├── edit.ejs
+        ├── new.ejs
+        └── tasks.ejs
+
 ├── .gitignore
+├── LICENSE
 ├── main.js
 ├── package-lock.json
-└── package.json
+├── package.json
+├── README.md
+
 ```
