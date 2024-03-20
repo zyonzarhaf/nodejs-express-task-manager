@@ -29,11 +29,15 @@ app.use(logger);
 app.use(responder);
 app.use(failSafeHandler);
 
-app.listen(app.get('port'), async () => {
-  try {
-    await connectDB(app.get('uri'));
-    console.log(`Server is listening on port ${app.get('port')}...`);
-  } catch (err) {
-    console.log(err);
-  }
-});
+if (app.get('env') !== 'test') {
+    app.listen(app.get('port'), async () => {
+        try {
+            await connectDB(app.get('uri'));
+            console.log(`Server is listening on port ${app.get('port')}...`);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+}
+
+export default app;
